@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:image_picker/image_picker.dart';
 import 'dart:async';
 import 'package:flutter/widgets.dart';
+import 'package:get_storage/get_storage.dart';
 
 
 
@@ -199,7 +199,7 @@ class _HomePageState extends State<HomePage> {
   Widget getCurrentPage() {
     if (_currentIndex == 0) {
       return buildHomePage();
-    } else if (_currentIndex == 2) {
+    } else if (_currentIndex == 1) {
       return ProfilePage();
      } else {
       return Container(); // Placeholder for additional pages
@@ -454,10 +454,6 @@ class _HomePageState extends State<HomePage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'My Booking',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.person),
             label: 'Profile',
           ),
@@ -466,7 +462,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
 
 class Booking {
   final Attraction attraction;
@@ -499,152 +494,117 @@ class BookingPage extends StatelessWidget {
         title: Text('Booking Confirmation'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: Text(
+        child: Container(
+          width: double.infinity,
+          margin: EdgeInsets.all(16),
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                spreadRadius: 2,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 200,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: NetworkImage(attraction.photo),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
+              Text(
                 'Attraction: ${attraction.name}',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),
               ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Booking Details',
-              style: TextStyle(
-                fontSize: 18,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Number of People: $numberOfPeople',
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Date: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-              style: TextStyle(
-                fontSize: 16,
-              ),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                Booking booking = Booking(
-                  attraction: attraction,
-                  numberOfPeople: numberOfPeople,
-                  selectedDate: selectedDate,
-                );
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MyBookingPage(booking: booking),
+              Row(
+                  children: [
+                    Icon(
+                      Icons.location_on,
+                        color: Colors.grey,
+                          size: 16,
+                      ),
+                    SizedBox(width: 4),
+                    Expanded(
+                      child: Text(
+                        attraction.locationString,
+                        style: TextStyle(fontSize: 16),
+                        overflow: TextOverflow.ellipsis,
+                     ),
                   ),
-                );
-              },
-              child: Text('Confirm Booking'),
-              style: ElevatedButton.styleFrom(
-                primary: Color(0xFFB86BC7),
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                ],
               ),
-            ),
-          ],
+              SizedBox(height: 8),
+              Text(
+                'Price: ${attraction.lowestPrice}',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Booking Details',
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Number of People: $numberOfPeople',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Date: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  Booking booking = Booking(
+                    attraction: attraction,
+                    numberOfPeople: numberOfPeople,
+                    selectedDate: selectedDate,
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MyBookingPage(booking: booking),
+                    ),
+                  );
+                },
+                child: Text('Confirm Booking'),
+                style: ElevatedButton.styleFrom(
+                  primary: Color(0xFFB86BC7),
+                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class MyBookingPage extends StatefulWidget {
-  final Booking booking;
-
-  MyBookingPage({required this.booking});
-
-  @override
-  _MyBookingPageState createState() => _MyBookingPageState();
-}
-
-class _MyBookingPageState extends State<MyBookingPage> {
-  List<Booking> bookings = [];
-
-  @override
-  void initState() {
-    super.initState();
-    addBooking(widget.booking);
-  }
-
-  void addBooking(Booking booking) {
-    setState(() {
-      bookings.insert(0, booking);
-    });
-  }
-
-  Widget getCurrentPage() {
-    return ListView.builder(
-      itemCount: bookings.length,
-      itemBuilder: (context, index) {
-        Booking booking = bookings[index];
-        return ListTile(
-          title: Text('Attraction: ${booking.attraction.name}'),
-          subtitle: Text(
-            'Number of People: ${booking.numberOfPeople}\nDate: ${booking.selectedDate.day}/${booking.selectedDate.month}/${booking.selectedDate.year}',
-          ),
-        );
-      },
-    );
-  }
-
-  int _currentIndex = 1;
-
-  void navigateToPage(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
-
-    if (index == 0) {
-      // Navigate to Home page
-    } else if (index == 1) {
-      // Already on My Booking page
-    } else if (index == 2) {
-      // Navigate to Profile page
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFB86BC7),
-        title: Text('My Bookings'),
-      ),
-      body: getCurrentPage(),
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Color(0xFFB86BC7),
-        currentIndex: _currentIndex,
-        onTap: navigateToPage,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'My Booking',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 
 class ProfilePage extends StatefulWidget {
@@ -653,8 +613,28 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final GetStorage storage = GetStorage(); // Create an instance of GetStorage
   String _userName = '';
   TextEditingController _nameController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserName();
+  }
+
+  void _loadUserName() {
+    setState(() {
+      _userName = storage.read('userName') ?? ''; // Read user name from storage
+    });
+  }
+
+  void _saveUserName(String userName) {
+    setState(() {
+      _userName = userName;
+      storage.write('userName', userName); // Save user name to storage
+    });
+  }
 
   void _showNameInputDialog() {
     showDialog(
@@ -681,6 +661,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 setState(() {
                   _userName = _nameController.text;
                 });
+                _saveUserName(_userName);
                 Navigator.of(context).pop();
               },
             ),
@@ -690,18 +671,28 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().getImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      // Handle the picked image
-      // For example, you can save it to a file or upload it to a server
+  void navigateToPage(int index) {
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage(user: null)),
+      );
     }
+  }
+
+  void _signOut() async {
+    // Sign out the user and navigate to the AuthenticationScreen
+    FirebaseAuth _auth = FirebaseAuth.instance;
+    await _auth.signOut();
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AuthenticationScreen()),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -709,14 +700,6 @@ class _ProfilePageState extends State<ProfilePage> {
             CircleAvatar(
               radius: 80,
               backgroundImage: AssetImage('lib/assets/placeholder.png'),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _pickImage,
-              child: Text('Change profile pic'),
-              style: ElevatedButton.styleFrom(
-                primary: Color(0xFFB86BC7),
-              ),
             ),
             SizedBox(height: 16),
             Text(
@@ -735,12 +718,138 @@ class _ProfilePageState extends State<ProfilePage> {
                 primary: Color(0xFFB86BC7),
               ),
             ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _signOut,
+              child: Text('Sign Out'),
+              style: ElevatedButton.styleFrom(
+                primary: Color(0xFFB86BC7),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 }
+
+
+class MyBookingPage extends StatefulWidget {
+  final Booking booking;
+
+  const MyBookingPage({Key? key, required this.booking}) : super(key: key);
+
+  @override
+  _MyBookingPageState createState() => _MyBookingPageState();
+}
+
+class _MyBookingPageState extends State<MyBookingPage> {
+  List<Booking> bookings = [];
+
+  @override
+  void initState() {
+    super.initState();
+    addBooking(widget.booking);
+  }
+
+  void addBooking(Booking booking) {
+    setState(() {
+      bookings.insert(0, booking);
+    });
+  }
+
+  Widget getCurrentPage() {
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      child: bookings.isNotEmpty
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Booking is successful!',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 16),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: bookings.length,
+                        itemBuilder: (context, index) {
+                          Booking booking = bookings[index];
+                          return ListTile(
+                            title: Text('Attraction: ${booking.attraction.name}'),
+                            subtitle: Text(
+                              'Number of People: ${booking.numberOfPeople}\nDate: ${booking.selectedDate.day}/${booking.selectedDate.month}/${booking.selectedDate.year}',
+                            ),
+                          );
+                        },
+                      ),
+                      SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomePage(user: null)),
+                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Color(0xFFB86BC7),
+                          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        child: Text(
+                          'Done',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            )
+          : Text(
+              'No bookings yet',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: getCurrentPage(),
+    );
+  }
+}
+
 
 
 class Attraction {
