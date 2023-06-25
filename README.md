@@ -1,36 +1,101 @@
-# MAD_Project
+# MAD_PROJECT
+## Members:
 - AL-QERSHI ABDULLAH ABDULRAHMAN - 1923111
 - MOHAMMAD AYYUB AZIZULLAH - 1915021
 - BAWAZIER NAJLA GEIS JUNAID - 2017868
 - SHOMIDA ROUMHAYATY - 2011978
 
+## Link of App Simulation and screenshots
+https://drive.google.com/drive/folders/1YYMIjI_Pq0_hxZsHda1fB9QcCuQZuOWk?usp=sharing
 
-The provided code is a Flutter application that demonstrates Firebase authentication and data fetching from an API. It includes several screens and functionalities. Here's a breakdown of the code:
+## Summary of the project:
+The developed app is a comprehensive platform for booking online tickets to tourist attractions in Malaysia. It provides users with a wide range of attractions to choose from, along with detailed information such as images, location, price, and ratings. Users can make informed decisions and conveniently book their preferred attractions, specifying the date and number of attendees. The app utilizes Firebase for secure user authentication and integrates with the TripAdvisor.com API to offer up-to-date attraction details. By simplifying the booking process and providing valuable information, the app helps users plan their trips, save time, and maximize their travel experiences in Malaysia.
 
-1. The code imports necessary packages, including flutter/material.dart, dart:convert, http, firebase_core, firebase_auth, image_picker, and others.
+## Getting Started
 
-2. The main function initializes Firebase and runs the Flutter application.
+To get started with this project, follow these steps:
 
-3. The MyApp class is the root widget of the application. It sets the title, theme, and initial screen.
+1. Clone the repository:
 
-4. The AuthenticationScreen class is a StatefulWidget that represents the authentication screen. It includes text fields for email and password, an icon, a title, and a sign-in button. When the user taps the sign-in button, it triggers the _signInWithEmailAndPassword function to authenticate the user using Firebase Authentication.
+2. Open the project in your preferred IDE or code editor, the project name should be: mad_project not MAD_project.
 
-5. The _signInWithEmailAndPassword function attempts to sign in the user with the provided email and password using the _auth instance of FirebaseAuth. If the sign-in is successful, it navigates to the home page (HomePage) passing the authenticated user. If there's an error, it sets the _errorMessage variable to display the error message.
+3. Make sure you have Flutter and Dart installed on your system.
+  
+5. Firebase Configurations steps:
 
-6. The HomePage class is a StatefulWidget that represents the main page of the application. It fetches data from an API using http package and displays a list of attractions. The user can navigate between pages using a bottom navigation bar.
+   1. Just download the full project from github
+      or
+   2. Follow these steps:
+      - Create new project in firebase
+      - Go to "Authentication" apply email/password authentication
+          From there you can add the users that you need them to use the app 
+          In our case we use:
+          Email:
+          {Name}@mad.com
+          Password:
+          {Matric No.}
 
-7. The fetchData function sends an HTTP GET request to the API and retrieves a list of attractions. It then sorts the attractions by name and updates the state with the fetched data.
+          List of the users: 
+          1.qershi@mad.com
+          1923111
+          2. aziz@mad.com
+          1915021
+          3. najla@mad.com
+          2017868
+          4. shomida@mad.com
+          2011978
+          5. dr.rizal@mad.com
+          123456
+      - Go to add app in firebase 
+          Copy project name 
+          
+          And paste in the name app name section
+          com.example.{project name}
+          
+          com.example.mad_project
+          
+           and click on next 
 
-8. The _currentIndex variable keeps track of the current page in the HomePage. The navigateToPage function is called when the user taps on a bottom navigation bar item, and it updates the _currentIndex accordingly.
+      - Download the json file and put it in android/app directory in the flutter project
 
-9. The buildHomePage function builds the home page by mapping the _attractions list to a ListView.builder and displaying each attraction as a Card.
+      - Add these dependencies in the yaml file 
+      
+        
+            firebase_auth: ^4.6.3
+            firebase_core: ^2.5.0
+            http: ^0.13.1
 
-10. The Booking class represents a booking with an attraction, number of people, and selected date.
 
-11. The BookingPage class displays the booking confirmation screen with the attraction details, number of people, and selected date. When the user taps the "Confirm Booking" button, it navigates to the MyBookingPage passing the booking details.
+      - Go to android/app/build.gradle in the bottom paste the following line 
+      
+        apply plugin: 'com.google.gms.google-services'
+      
+      - Go to android/build.gradle
+        Paste the following in the dependencies section
+      
+        classpath 'com.google.gms:google-services:4.3.15'
+      - Run the project and it should be working fine
+      
 
-12. The MyBookingPage class displays the user's bookings as a list. It maintains a list of Booking objects and provides a addBooking function to add a new booking to the list. The getCurrentPage function builds the current page based on the _currentIndex value.
 
-13. The bottomNavigationBar in MyBookingPage allows the user to navigate between different pages: Home, My Bookings (already selected), and Profile.
+## Features
 
-Overall, the code provides a basic structure for a Flutter application with Firebase authentication and API data fetching. It demonstrates navigation between screens, input handling, and state management.
+- Sign in with email and password authentication.
+- View a list of attractions and their information such as photo, name, location, rating, price.
+- Book attractions with the desired number of people and date
+- Confirmation page of booking details
+- Lets the user edit profile by changing the name and signout feature, the profile name for each account would still be stored even when the account is already signed out.
+- Navigate between pages using navigation bar at the bottom of the page.
+
+
+## Dependencies
+
+This project uses the following dependencies:
+
+- `flutter/material.dart`: Provides the material design components for the UI.
+- `dart:convert`: Provides JSON encoding and decoding functionality.
+- `http`: Provides HTTP client for making API requests.
+- `firebase_core`: Provides the core Firebase functionality.
+- `firebase_auth`: Provides Firebase authentication functionality.
+- `flutter/widgets.dart`: Provides the Flutter widget framework.
+- `get_storage`: Provides a simple key-value storage for Flutter.
