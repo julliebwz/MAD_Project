@@ -1,4 +1,9 @@
 # MAD_Project
+AL-QERSHI ABDULLAH ABDULRAHMAN - 1923111
+MOHAMMAD AYYUB AZIZULLAH - 1915021
+BAWAZIER NAJLA GEIS JUNAID - 2017868
+SHOMIDA ROUMHAYATY - 2011978
+
 
 The provided code is a Flutter application that demonstrates Firebase authentication and data fetching from an API. It includes several screens and functionalities. Here's a breakdown of the code:
 
