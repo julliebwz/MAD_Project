@@ -36,7 +36,7 @@ To get started with this project, follow these steps:
           {Matric No.}
 
           List of the users: 
-          1.qershi@mad.com
+          1. qershi@mad.com
           1923111
           2. aziz@mad.com
           1915021
