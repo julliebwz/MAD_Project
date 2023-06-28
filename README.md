@@ -5,7 +5,7 @@
 - BAWAZIER NAJLA GEIS JUNAID - 2017868
 - SHOMIDA ROUMHAYATY - 2011978
 
-## Link of App Simulation and screenshots
+## Link of App Screenshots and Video
 https://drive.google.com/drive/folders/1YYMIjI_Pq0_hxZsHda1fB9QcCuQZuOWk?usp=sharing
 
 ## Summary of the project:
